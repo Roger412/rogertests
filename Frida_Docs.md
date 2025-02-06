@@ -22,17 +22,17 @@
 ---
 
 ## 2. Electronics Components List
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | Power Info           |
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | Power Info^1^        |
 |--------------------|-------------------|----------|--------------------------------------|----------------------|----------------------|
 | Computing Hardware    | Jetson AGX Xavier    | 1        | Main processing unit                 | [Link](https://siliconhighway.com/wp-content/gallery/jetson-agx-xavier-developer-kit-datasheet-us-811514-r5-web.pdf)            | 9v - 20v input, Consumption: 10w - 30w |
 | Computing Hardware        | Jetson nano             | 1       | Navigation processing unit                  | [Link](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/Jetson-Nano-System-On-Module-Data-Sheet-DA-09366-001_v1.2.pdf?__token__=exp=1738274456~hmac=3caffd1d3e7d9a33a83d3bb710c87b79470322557687cc5122a6aada32d1c68b&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczovL3d3dy5nb29nbGUuY29tLyJ9)            | 5V 2A via micro USB<br>5V 4A via power jack<br>5V 5A via expansion header pins |
 | Vision camera     | Stereolabs ZED 2     | 1        | Vision main camera                   | [Link](https://www.mouser.com/datasheet/2/1520/ZED_2_Datasheet_v1_1-3498705.pdf)            | 380 mA / 5V (USB Powered) |
 | Differential mobile base  | EAI Dashgo B1           | 1        | Mobile base                   | [Link](https://eaibot.cn/download/1)            | 5V-24V<br>batería incluida de 12Ah |
 | Manipulator 6-DOF         | UF-Xarm6          | 1        |  Manipulation main component                      | [Link](http://download.ufactory.cc/xarm6/xArm%206%20User%20Manual_20190719.pdf)            | 24 VDC, 15 A (a través de Xarm control box) |
-| Xarm controller        | UFACTORY xArm DC Control Box   | 1        | xarm6 controller             | [Link](http://download.ufactory.cc/xarm/en/xArm%20User%20Manual.pdf?v=1578910898247)            |----------------------|
+| Xarm controller        | UFACTORY xArm DC Control Box   | 1        | xarm6 controller             | [Link](http://download.ufactory.cc/xarm/en/xArm%20User%20Manual.pdf?v=1578910898247)            |  |
 | Lidar       | RPLidar A1   | 1        | Lidar for navigation             | [Link](https://www.generationrobots.com/media/rplidar-a1m8-360-degree-laser-scanner-development-kit-datasheet-1.pdf)            | Scanner: 4.9V-5.5V, Start current: 500-600 mA, Work current: 300-350 mA<br>Motor: 5-10 V, 100 mA |
-| USB-Hub       | USB-C hub Ugreen   | 1        | Usb-hub for xavier agx         | [Link](https://www.ugreen.com/collections/usb-c-hub/products/ugreen-4-in-1-usb-c-hub?variant=39915663196222)    |----------------------|
-| Audio card    |  Steren audo USB com-202   | 1        | Audio card for Agx     | [Link](https://descargas.steren.com.mx/COM-202-instr.pdf) |----------------------|
+| USB-Hub       | USB-C hub Ugreen   | 1        | Usb-hub for xavier agx         | [Link](https://www.ugreen.com/collections/usb-c-hub/products/ugreen-4-in-1-usb-c-hub?variant=39915663196222)    |  |
+| Audio card    |  Steren audo USB com-202   | 1        | Audio card for Agx     | [Link](https://descargas.steren.com.mx/COM-202-instr.pdf) |  |
 | Microphone   |  ReSpeaker_Mic_Array_v2.0 | 1        | Microphone for HRI     | [Link](https://wiki.seeedstudio.com/ReSpeaker_Mic_Array_v2.0/) | 5V, 170mA - 180mA |
 | Speaker   |  Logitech speaker x100  | 1        | Speaker for HRI     | [Link](https://img.cartimex.com/v2/pdf/X100.pdf) | Batería incluida, carga con mini usb (5V) |
 | LCD Screen   | Joy it 7“ LCD TOUCHSCREEN | 1        | Lcd for HRI    | [Link](https://joy-it.net/files/files/Produkte/RB-LCD-7-3/RB-LCD-7-3_Datasheet_2021-12-09.pdf) | 5 V,  2 A |
@@ -130,3 +130,6 @@
   | Version | Date       | Changes Made           |
   |---------|------------|------------------------|
   | 1.0     | 2025-30-01 | Initial release        |
+  | 1.1     | 2025-06-02 | Added Power Info       |
+
+1. [Power Info References](https://docs.google.com/document/d/1Q9S6LA6cKoQ-6siUxOCjyDouAbWhcDokHk4_bEidrpQ/edit?usp=sharing)
