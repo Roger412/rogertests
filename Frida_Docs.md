@@ -20,36 +20,31 @@
 
 
 ---
-## table test
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | info                 |
-|--------------------|-------------------|----------|--------------------------------------|----------------------|----------------------|
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | nothing|
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | avocado |
-
 
 ## 2. Electronics Components List
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       |
-|--------------------|-------------------|----------|--------------------------------------|----------------------|
-| Computing Hardware    | Jetson AGX Xavier    | 1        | Main processing unit                 | [Link](https://siliconhighway.com/wp-content/gallery/jetson-agx-xavier-developer-kit-datasheet-us-811514-r5-web.pdf)            |
-| Computing Hardware        | Jetson nano             | 1       | Navigation processing unit                  | [Link](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/Jetson-Nano-System-On-Module-Data-Sheet-DA-09366-001_v1.2.pdf?__token__=exp=1738274456~hmac=3caffd1d3e7d9a33a83d3bb710c87b79470322557687cc5122a6aada32d1c68b&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczovL3d3dy5nb29nbGUuY29tLyJ9)            |
-| Vision camera     | Stereolabs ZED 2     | 1        | Vision main camera                   | [Link](https://www.mouser.com/datasheet/2/1520/ZED_2_Datasheet_v1_1-3498705.pdf)            |
-| Differential mobile base  | EAI Dashgo B1           | 1        | Mobile base                   | [Link](https://eaibot.cn/download/1)            |
-| Manipulator 6-DOF         | UF-Xarm6          | 1        |  Manipulation main component                      | [Link](http://download.ufactory.cc/xarm6/xArm%206%20User%20Manual_20190719.pdf)            |
-| Xarm controller        | UFACTORY xArm DC Control Box   | 1        | xarm6 controller             | [Link](http://download.ufactory.cc/xarm/en/xArm%20User%20Manual.pdf?v=1578910898247)            |
-| Lidar       | RPLidar A1   | 1        | Lidar for navigation             | [Link](https://www.generationrobots.com/media/rplidar-a1m8-360-degree-laser-scanner-development-kit-datasheet-1.pdf)            |
-| USB-Hub       | USB-C hub Ugreen   | 1        | Usb-hub for xavier agx         | [Link](https://www.ugreen.com/collections/usb-c-hub/products/ugreen-4-in-1-usb-c-hub?variant=39915663196222)    |
-| Audio card    |  Steren audo USB com-202   | 1        | Audio card for Agx     | [Link](https://descargas.steren.com.mx/COM-202-instr.pdf) 
-| USB-Hub       | USB-C hub Ugreen   | 1        | Usb-hub for xavier agx         | [Link](https://www.ugreen.com/collections/usb-c-hub/products/ugreen-4-in-1-usb-c-hub?variant=39915663196222)    |
-| Microphone   |  ReSpeaker_Mic_Array_v2.0 | 1        | Microphone for HRI     | [Link](https://wiki.seeedstudio.com/ReSpeaker_Mic_Array_v2.0/) 
-| Speaker   |  Logitech speaker x100  | 1        | Speaker for HRI     | [Link](https://img.cartimex.com/v2/pdf/X100.pdf) 
-| LCD Screen   | Joy it 7“ LCD TOUCHSCREEN | 1        | Lcd for HRI    | [Link](https://joy-it.net/files/files/Produkte/RB-LCD-7-3/RB-LCD-7-3_Datasheet_2021-12-09.pdf) 
-| Gripper microcontroller | Arduino Nano | 1        | Gripper Microcontroller   | [Link](https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf) 
-| Voltage regulator  | LM2596 Variable voltage regulator | 1        | Gripper voltage regulator   | [Link](https://www.ti.com/lit/ds/symlink/lm2596.pdf) 
-| Gripper servomotor | SERVOMOTOR MG996 16kg 180 degrees | 1        | Gripper servomotor  | [Link](https://www.electronicoscaldas.com/datasheet/MG996R_Tower-Pro.pdf) 
-| Voltage Regulator | LB07 Step Down 15A | 1        | Xavier Agx Regulator | [Link](https://www.mpja.com/download/36625ps.pdf) 
-| Voltimeter | Dual Digital Display DC Voltmeter & Ammeter 0-100V 0-10a | 2       | Battery voltimeter | [Link](https://curtocircuito.com.br/datasheet/modulo/voltimetro_e_amperimetro.pdf) 
-| Electronic Switch | ON-OFF Switch KCD1-102| 2       | Battery voltimeter | [Link](https://www.handsontec.com/dataspecs/switches/KCD1-102-Rocker%20SW.pdf) 
-| Li-ion Battery pack | SSCYHT 24v 20ah battery pack | 2       | Main power source | [Link](https://www.amazon.com.mx/SSCYHT-Bicicleta-el%C3%A9ctrica-Impermeable-Plegable/dp/B0CDRNM1PW/ref=sr_1_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&s=electronics&sr=1-1) 
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | Power Info           |
+|--------------------|-------------------|----------|--------------------------------------|----------------------|----------------------|
+| Computing Hardware    | Jetson AGX Xavier    | 1        | Main processing unit                 | [Link](https://siliconhighway.com/wp-content/gallery/jetson-agx-xavier-developer-kit-datasheet-us-811514-r5-web.pdf)            | 9v - 20v input, Consumption: 10w - 30w |
+| Computing Hardware        | Jetson nano             | 1       | Navigation processing unit                  | [Link](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/Jetson-Nano-System-On-Module-Data-Sheet-DA-09366-001_v1.2.pdf?__token__=exp=1738274456~hmac=3caffd1d3e7d9a33a83d3bb710c87b79470322557687cc5122a6aada32d1c68b&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczovL3d3dy5nb29nbGUuY29tLyJ9)            | 5V 2A via micro usb
+5V 4A via power jack
+5V 5A via expansion header pins |
+| Vision camera     | Stereolabs ZED 2     | 1        | Vision main camera                   | [Link](https://www.mouser.com/datasheet/2/1520/ZED_2_Datasheet_v1_1-3498705.pdf)            | info |
+| Differential mobile base  | EAI Dashgo B1           | 1        | Mobile base                   | [Link](https://eaibot.cn/download/1)            | info |
+| Manipulator 6-DOF         | UF-Xarm6          | 1        |  Manipulation main component                      | [Link](http://download.ufactory.cc/xarm6/xArm%206%20User%20Manual_20190719.pdf)            | info |
+| Xarm controller        | UFACTORY xArm DC Control Box   | 1        | xarm6 controller             | [Link](http://download.ufactory.cc/xarm/en/xArm%20User%20Manual.pdf?v=1578910898247)            | info |
+| Lidar       | RPLidar A1   | 1        | Lidar for navigation             | [Link](https://www.generationrobots.com/media/rplidar-a1m8-360-degree-laser-scanner-development-kit-datasheet-1.pdf)            | info |
+| USB-Hub       | USB-C hub Ugreen   | 1        | Usb-hub for xavier agx         | [Link](https://www.ugreen.com/collections/usb-c-hub/products/ugreen-4-in-1-usb-c-hub?variant=39915663196222)    | info |
+| Audio card    |  Steren audo USB com-202   | 1        | Audio card for Agx     | [Link](https://descargas.steren.com.mx/COM-202-instr.pdf) | info | 
+| Microphone   |  ReSpeaker_Mic_Array_v2.0 | 1        | Microphone for HRI     | [Link](https://wiki.seeedstudio.com/ReSpeaker_Mic_Array_v2.0/) | info |
+| Speaker   |  Logitech speaker x100  | 1        | Speaker for HRI     | [Link](https://img.cartimex.com/v2/pdf/X100.pdf) | info |
+| LCD Screen   | Joy it 7“ LCD TOUCHSCREEN | 1        | Lcd for HRI    | [Link](https://joy-it.net/files/files/Produkte/RB-LCD-7-3/RB-LCD-7-3_Datasheet_2021-12-09.pdf) | info |
+| Gripper microcontroller | Arduino Nano | 1        | Gripper Microcontroller   | [Link](https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf) | info |
+| Voltage regulator  | LM2596 Variable voltage regulator | 1        | Gripper voltage regulator   | [Link](https://www.ti.com/lit/ds/symlink/lm2596.pdf) | info |
+| Gripper servomotor | SERVOMOTOR MG996 16kg 180 degrees | 1        | Gripper servomotor  | [Link](https://www.electronicoscaldas.com/datasheet/MG996R_Tower-Pro.pdf) | info | 
+| Voltage Regulator | LB07 Step Down 15A | 1        | Xavier Agx Regulator | [Link](https://www.mpja.com/download/36625ps.pdf) | info |
+| Voltimeter | Dual Digital Display DC Voltmeter & Ammeter 0-100V 0-10a | 2       | Battery voltimeter | [Link](https://curtocircuito.com.br/datasheet/modulo/voltimetro_e_amperimetro.pdf) | info |
+| Electronic Switch | ON-OFF Switch KCD1-102| 2       | Battery voltimeter | [Link](https://www.handsontec.com/dataspecs/switches/KCD1-102-Rocker%20SW.pdf) | info |
+| Li-ion Battery pack | SSCYHT 24v 20ah battery pack | 2       | Main power source | [Link](https://www.amazon.com.mx/ | info |SSCYHT-Bicicleta-el%C3%A9ctrica-Impermeable-Plegable/dp/B0CDRNM1PW/ref=sr_1_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&s=electronics&sr=1-1) | info |
 
 ---
 
