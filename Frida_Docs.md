@@ -22,7 +22,7 @@
 ---
 
 ## 2. Electronics Components List
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | Power Info^1^        |
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | Power Info<sup>1<sup> |
 |--------------------|-------------------|----------|--------------------------------------|----------------------|----------------------|
 | Computing Hardware    | Jetson AGX Xavier    | 1        | Main processing unit                 | [Link](https://siliconhighway.com/wp-content/gallery/jetson-agx-xavier-developer-kit-datasheet-us-811514-r5-web.pdf)            | 9v - 20v input, Consumption: 10w - 30w |
 | Computing Hardware        | Jetson nano             | 1       | Navigation processing unit                  | [Link](https://developer.download.nvidia.com/assets/embedded/secure/jetson/Nano/docs/Jetson-Nano-System-On-Module-Data-Sheet-DA-09366-001_v1.2.pdf?__token__=exp=1738274456~hmac=3caffd1d3e7d9a33a83d3bb710c87b79470322557687cc5122a6aada32d1c68b&t=eyJscyI6ImdzZW8iLCJsc2QiOiJodHRwczovL3d3dy5nb29nbGUuY29tLyJ9)            | 5V 2A via micro USB<br>5V 4A via power jack<br>5V 5A via expansion header pins |
