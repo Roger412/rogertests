@@ -42,7 +42,7 @@
 | Voltage Regulator | LB07 Step Down 15A | 1        | Xavier Agx Regulator | [Link](https://www.mpja.com/download/36625ps.pdf) | Input: 6V - 40V<br>Output: 1.2V - 36V, 15 A , 20 A max |
 | Voltimeter | Dual Digital Display DC Voltmeter & Ammeter 0-100V 0-10a | 2       | Battery voltimeter | [Link](https://curtocircuito.com.br/datasheet/modulo/voltimetro_e_amperimetro.pdf) | Operating voltage: DC 4.5 ~ 30V<br>Operating current: <20 mA |
 | Electronic Switch | ON-OFF Switch KCD1-102| 2       | Battery voltimeter | [Link](https://www.handsontec.com/dataspecs/switches/KCD1-102-Rocker%20SW.pdf) | Rated Voltage: 6A 250VAC / 10A 120VAC |
-| Li-ion Battery pack | SSCYHT 24v 20ah battery pack | 2       | Main power source | [Link](https://www.amazon.com.mx/ | info |SSCYHT-Bicicleta-el%C3%A9ctrica-Impermeable-Plegable/dp/B0CDRNM1PW/ref=sr_1_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&s=electronics&sr=1-1) | Output: 24v 20ah |
+| Li-ion Battery pack | SSCYHT 24v 20ah battery pack | 2       | Main power source | [Link](https://www.amazon.com.mx/SSCYHT-Bicicleta-el%C3%A9ctrica-Impermeable-Plegable/dp/B0CDRNM1PW/ref=sr_1_1?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&s=electronics&sr=1-1) | Output: 24v 20ah |
 
 ---
 
