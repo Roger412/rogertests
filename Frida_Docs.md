@@ -21,9 +21,10 @@
 
 ---
 ## table test
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | ------------------ |
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | ------------------ |
-| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | ------------------ |
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | info                 |
+|--------------------|-------------------|----------|--------------------------------------|----------------------|----------------------|
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | nothing|
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | avocado |
 
 
 ## 2. Electronics Components List
