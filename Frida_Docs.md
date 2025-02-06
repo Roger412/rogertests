@@ -20,6 +20,11 @@
 
 
 ---
+## table test
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | ------------------ |
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | ------------------ |
+| Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       | ------------------ |
+
 
 ## 2. Electronics Components List
 | Component          | Model/Part Number | Quantity | Description                          | Datasheet Link       |
