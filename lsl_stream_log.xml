@@ -1,0 +1,24 @@
+--- Stream 1 ---
+<?xml version="1.0"?>
+<info>
+	<name>LSLOutletPYLSL-EEG</name>
+	<type>EEG</type>
+	<channel_count>8</channel_count>
+	<channel_format>float32</channel_format>
+	<source_id>ENOBIO-8-NE-Device (COM5)</source_id>
+	<nominal_srate>500.0000000000000</nominal_srate>
+	<version>1.100000000000000</version>
+	<created_at>1253.161791700000</created_at>
+	<uid>643ef774-cd36-43fd-8227-5c44f6b5da5d</uid>
+	<session_id>default</session_id>
+	<hostname>LAPTOP-6ONA09LQ</hostname>
+	<v4address />
+	<v4data_port>16572</v4data_port>
+	<v4service_port>16572</v4service_port>
+	<v6address />
+	<v6data_port>16572</v6data_port>
+	<v6service_port>16572</v6service_port>
+	<desc />
+</info>
+
+
