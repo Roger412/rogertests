@@ -3,6 +3,7 @@ import numpy as np
 import os
 from glob import glob
 from tqdm import tqdm
+import open3d as o3d
 
 # === Load calibration data ===
 try:
@@ -26,9 +27,9 @@ except Exception as e:
 kps_all = []
 des_all = []
 try:
-    sift = cv2.SIFT_create()
+    orb = cv2.ORB_create(nfeatures=3000)  # feel free to increase
     for img in images:
-        kps, des = sift.detectAndCompute(img, None)
+        kps, des = orb.detectAndCompute(img, None)
         kps_all.append(kps)
         des_all.append(des)
 except Exception as e:
@@ -41,7 +42,7 @@ try:
     index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
     search_params = dict(checks=50)
     # flann = cv2.FlannBasedMatcher(index_params, search_params)
-    flann = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
+    flann = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
 except Exception as e:
     print("❌ Error initializing matcher:", e)
     exit(1)
@@ -54,8 +55,11 @@ try:
     if des_all[0] is None or des_all[1] is None:
         raise ValueError("One of the first two descriptors is None.")
 
-    des0 = np.asarray(des_all[0], dtype=np.float32)
-    des1 = np.asarray(des_all[1], dtype=np.float32)
+    # des0 = np.asarray(des_all[0], dtype=np.float32)
+    # des1 = np.asarray(des_all[1], dtype=np.float32)
+    des0 = des_all[0]
+    des1 = des_all[1]
+
 
     print("des0 shape:", des0.shape, des0.dtype)
     print("des1 shape:", des1.shape, des1.dtype)
@@ -83,29 +87,53 @@ try:
     E, mask = cv2.findEssentialMat(pts1, pts2, K, cv2.RANSAC, 0.999, 1.0)
     if E is None:
         raise ValueError("Essential matrix computation failed.")
-
+    
     _, R, t, mask_pose = cv2.recoverPose(E, pts1, pts2, K)
     camera_poses.append(np.hstack((R, t)))
-
+    
+    print("test1")
     P1 = K @ camera_poses[0]
     P2 = K @ camera_poses[1]
-    pts4D = cv2.triangulatePoints(P1, P2, pts1.T, pts2.T).astype(np.float64)
+    
+    print("🔍 Triangulation inputs:")
+    print(f"P1 shape: {P1.shape}, P2 shape: {P2.shape}")
+    print(f"pts1 shape: {pts1.T.shape}, pts2 shape: {pts2.T.shape}")
+    print(f"pts1[:5]: {pts1[:5]}")
+    print(f"pts2[:5]: {pts2[:5]}")
+    print("P1:", P1)
+    print("P2:", P2)
+    print("pts1.T dtype:", pts1.T.dtype, "shape:", pts1.T.shape)
+    print("pts2.T dtype:", pts2.T.dtype, "shape:", pts2.T.shape)
+    print("pts1.T:", pts1.T[:,:5])  # show just first 5
+    print("pts2.T:", pts2.T[:,:5])
+
+    pts1f = np.array(pts1.T, dtype=np.float32)
+    pts2f = np.array(pts2.T, dtype=np.float32)
+
+    try:
+        pts4D = cv2.triangulatePoints(P1, P2, pts1f, pts2f).astype(np.float64)
+        print("✅ Triangulation succeeded")
+    except Exception as tri_e:
+        print("❌ Error in cv2.triangulatePoints:", tri_e)
+        exit(1)
+
+    print("test3")
     valid = np.abs(pts4D[3]) > 1e-6
     pts4D = pts4D[:, valid]
+    print("test4")
     if pts4D.shape[1] == 0:
         raise ValueError("No valid 3D points after triangulation.")
     pts4D /= pts4D[3]
     points3D = pts4D[:3].T
-
+    
     descriptors3D = [des_all[0][m.queryIdx] for m, n in matches
                      if m.distance < 0.8 * n.distance and m.queryIdx < len(des_all[0])]
-    descriptors3D = np.asarray(descriptors3D, dtype=np.float32)
+    # descriptors3D = np.asarray(descriptors3D, dtype=np.float32)
+    descriptors3D = np.asarray(descriptors3D)
 
 except Exception as e:
     print("❌ Error during bootstrap:", repr(e))
     exit(1)
-
-print("aasdfasdfasd")
 
 # === Add new views one by one ===
 for i in tqdm(range(2, len(images))):
@@ -117,7 +145,9 @@ for i in tqdm(range(2, len(images))):
         kps = kps_all[i]
         des = des_all[i]
 
-        matches = flann.knnMatch(descriptors3D.astype(np.float32), des, k=2)
+        # matches = flann.knnMatch(descriptors3D.astype(np.float32), des, k=2)
+        matches = flann.knnMatch(descriptors3D, des, k=2)
+
         pts3D = []
         pts2D = []
         for j, (m, n) in enumerate(matches):
@@ -173,19 +203,52 @@ for i in tqdm(range(2, len(images))):
         print(f"❌ Exception at view {i}:", e)
         continue
 
-# === Save final point cloud ===
+# === Save final point cloud with color, denoising and normalization ===
 try:
     points3D_filtered = points3D[np.isfinite(points3D).all(axis=1)]
     np.save("full_multiview_points.npy", points3D_filtered)
+
     if points3D_filtered.shape[0] == 0:
         print("❌ No valid 3D points to save.")
         exit(1)
 
-    import open3d as o3d
+    print("✨ Coloring and saving point cloud...")
+
+    # Use the first image for color projection
+    img_color = cv2.imread(image_paths[0], cv2.IMREAD_COLOR)  # or IMREAD_COLOR for color
+    height, width = img_color.shape[:2]
+
+    colors = []
+    for pt in points3D_filtered:
+        pt_hom = np.append(pt, 1.0)
+        uv = K @ camera_poses[0] @ pt_hom
+        uv /= uv[2]
+        u, v = int(round(uv[0])), int(round(uv[1]))
+        if 0 <= u < width and 0 <= v < height:
+            b, g, r = img_color[v, u]
+            colors.append([r / 255.0, g / 255.0, b / 255.0])  # Open3D expects RGB
+        else:
+            colors.append([0, 0, 0])  # black for out-of-bounds
+
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points3D_filtered)
+    pcd.colors = o3d.utility.Vector3dVector(colors)
+
+    # === Denoising ===
+    print("🧽 Removing statistical outliers...")
+    pcd, _ = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
+
+    # === Normalize ===
+    print("📐 Centering and normalizing...")
+    pts = np.asarray(pcd.points)
+    pts -= pts.mean(axis=0)
+    pts /= np.linalg.norm(pts, axis=1).max()
+    pcd.points = o3d.utility.Vector3dVector(pts)
+
+    # === Save ===
     o3d.io.write_point_cloud("full_multiview_cloud.ply", pcd)
-    print("✅ Saved full 3D point cloud as full_multiview_cloud.ply")
+    print("✅ Saved colored, denoised, normalized 3D point cloud as full_multiview_cloud.ply")
+
 except Exception as e:
     print("❌ Error saving point cloud:", e)
     exit(1)
