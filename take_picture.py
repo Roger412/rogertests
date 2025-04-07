@@ -1,7 +1,9 @@
 import cv2
 import os
 
-save_dir = "data/data5"
+os.environ['QT_QPA_PLATFORM'] = 'xcb'
+
+save_dir = "data/data6"
 os.makedirs(save_dir, exist_ok=True)
 
 cap = cv2.VideoCapture(0)

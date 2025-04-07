@@ -12,11 +12,11 @@ if colmap_path is None:
 print(f"✅ COLMAP found at: {colmap_path}")
 
 # === Paths ===
-image_dir = r"C:/Github/rogertests/data/data5"
+image_dir = "temple_test/temple2"
 workspace_dir = "colmap_out"
 database_path = os.path.join(workspace_dir, "database.db")
 sparse_dir = os.path.join(workspace_dir, "sparse")
-output_model = os.path.join(workspace_dir, "webos.ply")
+output_model = os.path.join(workspace_dir, "templo50_2.ply")
 
 if os.path.exists(database_path):
     os.remove(database_path)
