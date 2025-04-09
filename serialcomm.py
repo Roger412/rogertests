@@ -3,20 +3,23 @@ import time
 
 def main():
     # Abre el puerto serie
-    ser = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=10)
+    ser = serial.Serial(port='COM11', baudrate=9600, timeout=10)
     print("Serial port opened.")
 
     # Cadena de prueba que se enviará al STM32
-    serial_response = "10.0 5.0 15.0 6.0 1.0\n"
+    single_char = "c"
+    serial_response = "100.0 50.0 105.0 06.0 11.0\n"
 
     try:
         while True:
             # Enviar datos
-            # ser.write(serial_response.encode())
-            # ser.write(serial_response.encode())
-            print(f"Sent: {serial_response.strip()}")
+            ser.write(serial_response.encode())
+            ser.write(serial_response.encode())
+            
+            # print(f"Sent: {serial_response.strip()}")
 
             # Leer una línea desde el STM32
+            line = ser.readline().decode(errors='ignore').strip()
             line = ser.readline().decode(errors='ignore').strip()
             if line:
                 print(f"Received: {line}")
