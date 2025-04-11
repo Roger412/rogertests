@@ -3,10 +3,10 @@ import os
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
 
-save_dir = "data/data6"
+save_dir = "data/oveja2"
 os.makedirs(save_dir, exist_ok=True)
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(3)
 if not cap.isOpened():
     print("❌ Could not open camera")
     exit()

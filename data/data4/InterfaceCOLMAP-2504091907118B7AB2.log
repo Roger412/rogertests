@@ -1,0 +1,14 @@
+19:07:11 [App     ] OpenMVS x64 v2.3.0
+19:07:11 [App     ] Build date: Apr  9 2025, 17:59:42
+19:07:11 [App     ] CPU: 13th Gen Intel(R) Core(TM) i7-1355U (12 cores)
+19:07:11 [App     ] RAM: 15.33GB Physical Memory 2.00GB Virtual Memory
+19:07:11 [App     ] OS: Linux 6.8.0-57-generic (x86_64)
+19:07:11 [App     ] Disk: 6.32GB (117.55GB) space
+19:07:11 [App     ] SSE & AVX compatible CPU & OS detected
+19:07:11 [App     ] Command line: InterfaceCOLMAP -i colmap_out/mvs_model -o colmap_out/scene.mvs -w data/data4
+19:07:11 [App     ] error: unable to open file 'data/data4/colmap_out/mvs_model/sparse/cameras.txt'
+19:07:11 [App     ] error: unable to open file 'data/data4/colmap_out/mvs_model/sparse/cameras.bin'
+19:07:11 [App     ] MEMORYINFO: {
+19:07:11 [App     ] 	VmPeak:	 1762468 kB
+19:07:11 [App     ] 	VmSize:	 1762468 kB
+19:07:11 [App     ] } ENDINFO
