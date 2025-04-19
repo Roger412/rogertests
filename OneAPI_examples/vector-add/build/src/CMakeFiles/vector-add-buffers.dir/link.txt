@@ -1,0 +1,1 @@
+/opt/intel/oneapi/compiler/2025.0/bin/icpx -fsycl CMakeFiles/vector-add-buffers.dir/vector-add-buffers.cpp.o -o ../vector-add-buffers 

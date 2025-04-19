@@ -1,0 +1,1 @@
+/opt/intel/oneapi/compiler/2025.0/bin/icpx -fsycl -fintelfpga -Xshardware -Xstarget=Agilex7  -fsycl-link=early CMakeFiles/vector-add-usm_report.a.dir/vector-add-usm.cpp.o -o ../vector-add-usm_report.a 
