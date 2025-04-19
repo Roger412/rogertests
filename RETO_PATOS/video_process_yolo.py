@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 import cv2
+import subprocess
 
 # 1. Cargar modelo
 model = YOLO("yolov8n.pt")
@@ -38,3 +39,11 @@ while cap.isOpened():
 cap.release()
 out.release()
 print("✅ Video con detecciones guardado en: RETO_PATOS/patos_detectados.mp4")
+
+# xdg-open RETO_PATOS/patos_detectados.mp4
+
+# Ruta al video
+video_path = "RETO_PATOS/patos_detectados.mp4"
+
+# Ejecutar el comando en terminal para abrir el video con el visor predeterminado
+subprocess.run(["xdg-open", video_path])
