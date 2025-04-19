@@ -9,7 +9,7 @@ import intel_extension_for_pytorch as ipex
 print(torch.xpu.get_device_name(0))
 
 
-model = models.resnet50(weights="ResNet50_Weights.DEFAULT")
+model = models.resnet18(weights="ResNet18_Weights.DEFAULT")
 model.eval()
 data = torch.rand(1, 3, 224, 224)
 
