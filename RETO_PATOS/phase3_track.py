@@ -4,7 +4,8 @@ from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
 # Cargar YOLOv8 (usa el modelo 'yolov8n.pt' o 'yolov8s.pt')
-model = YOLO('yolov8s.pt')  # Cambia si quieres otro
+# model = YOLO('yolov8s.pt')  # Cambia si quieres otro
+model = YOLO('runs/detect/train5/weights/best.pt')
 
 # Iniciar DeepSORT
 tracker = DeepSort(max_age=30)
@@ -33,8 +34,8 @@ while cap.isOpened():
     for result in results.boxes.data.tolist():
         x1, y1, x2, y2, conf, cls = result
         class_name = model.names[int(cls)]
-        if class_name in ["bird", "duck"]:  # ajusta si no detecta bien
-            detections.append(([x1, y1, x2 - x1, y2 - y1], conf, class_name))
+        # if class_name in ["bird", "duck"]:  # ajusta si no detecta bien
+        detections.append(([x1, y1, x2 - x1, y2 - y1], conf, class_name))
 
     # Paso 2: DeepSORT tracking
     tracks = tracker.update_tracks(detections, frame=frame)

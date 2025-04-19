@@ -12,7 +12,9 @@ for split in ["train", "val"]:
     os.makedirs(os.path.join(labels_dir, split), exist_ok=True)
 
 # Get labeled images only
-label_files = [f for f in os.listdir(labels_dir) if f.endswith(".txt") and os.path.isfile(os.path.join(labels_dir, f))]
+label_files = [f for f in os.listdir(labels_dir) 
+               if f.endswith(".txt") and f != "classes.txt" and os.path.isfile(os.path.join(labels_dir, f))]
+
 random.shuffle(label_files)
 
 # 80/20 split
