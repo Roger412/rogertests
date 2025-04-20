@@ -43,7 +43,7 @@ RETO_PATOS/
 - Training config:  
   - `epochs=50`  
   - `imgsz=640`  
-  - `batch=16`  
+  - `batch=15?`  
   - Optimizer: `AdamW`
 - Model saved to: `runs/detect/train5/weights/best.pt`
 
