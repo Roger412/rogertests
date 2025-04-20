@@ -9,11 +9,14 @@ This project performs object detection and tracking of ducklings using a custom-
 ```text
 RETO_PATOS/
 ├── patos_dataset/
-│   ├── images/                         # Fotogramas originales extraídos del video (.jpg)
-│   ├── labels/                         # Anotaciones en formato YOLO (.txt)
+├── images/
+│   ├── train/        # Training images (.jpg)
+│   └── val/          # Validation images (.jpg)
+├── labels/
+│   ├── train/        # Corresponding YOLO labels (.txt)
+│   └── val/          # Corresponding YOLO labels (.txt)
+├── data.yaml         # Points to the image/label folders above
 │   ├── data.yaml                       # Archivo de configuración para entrenamiento YOLO
-│   ├── train/                          # Subconjunto de entrenamiento (imágenes + etiquetas)
-│   └── val/                            # Subconjunto de validación (imágenes + etiquetas)
 ├── homography_matrix/
 │   └── homography_matrix.npy          # Matriz 3x3 para transformar píxeles a coordenadas reales
 ├── prepare_train_yolo.py              # Script para dividir y organizar el dataset en train/val
