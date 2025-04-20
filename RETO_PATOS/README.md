@@ -6,14 +6,21 @@ This project performs object detection and tracking of ducklings using a custom-
 
 ## 📁 Project Structure
 
-RETO_PATOS/ ├── patos_dataset/ │ ├── images/ # Original frames (JPEG) │ ├── labels/ # YOLO-format annotations (TXT) │ ├── data.yaml # Dataset config for training │ ├── train/ # Training split │ └── val/ # Validation split ├── homography_matrix/ │ └── homography_matrix.npy # 3x3 matrix from pixel to world coordinates ├── train_yolo.py # Script to launch training ├── prepare_train_yolo.py # Splits dataset and organizes folders ├── patos_sin_sal.mp4 # Original video └── patos_detectados_yolo_entrenado.mp4 # Output video with detections
-
-markdown
-Copy
-Edit
-
----
-
+```text
+RETO_PATOS/
+├── patos_dataset/
+│   ├── images/                         # Fotogramas originales extraídos del video (.jpg)
+│   ├── labels/                         # Anotaciones en formato YOLO (.txt)
+│   ├── data.yaml                       # Archivo de configuración para entrenamiento YOLO
+│   ├── train/                          # Subconjunto de entrenamiento (imágenes + etiquetas)
+│   └── val/                            # Subconjunto de validación (imágenes + etiquetas)
+├── homography_matrix/
+│   └── homography_matrix.npy          # Matriz 3x3 para transformar píxeles a coordenadas reales
+├── prepare_train_yolo.py              # Script para dividir y organizar el dataset en train/val
+├── train_yolo.py                      # Script para entrenar YOLOv8 sobre los datos anotados
+├── patos_sin_sal.mp4                  # Video original sin anotaciones
+└── patos_detectados_yolo_entrenado.mp4 # Video de salida con detecciones de YOLOv8
+```
 ## 🚀 Workflow Overview
 
 ### 1. **Image Annotation**
