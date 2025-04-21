@@ -1,3 +1,8 @@
+/* 
+Unicorn Linux C API Data acquisition example
+https://github.com/unicorn-bi/Unicorn-Suite-Hybrid-Black/tree/master/Unicorn%20Linux%20C%20API/x64 
+*/
+
 #include <iostream>
 #include <fstream>
 
