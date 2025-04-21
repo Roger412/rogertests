@@ -1,8 +1,11 @@
-# rogertests
+# rogertests 
+## mostla_tests
 
-To Do: replicate mindmonitor in python using data acquisition C APIs 
+### To Do
 
-Current status:
+Replicate mindmonitor in python using data acquisition C APIs 
+
+### Current status
 
 WINDOWS & LINUX C API SUCCESFUL data acquisition tests
 
