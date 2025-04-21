@@ -1,8 +1,10 @@
 # rogertests
 
+To Do: replicate mindmonitor in python using data acquisition C APIs 
+
 Current status:
 
-WINDOWS C API SUCCESFUL data acquisition tests, must check ubuntu 
+WINDOWS & LINUX C API SUCCESFUL data acquisition tests
 
 LSL receive through python with hotspot success
 
