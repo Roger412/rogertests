@@ -13,7 +13,7 @@ img_hough = img.copy()
 img_homogeneous = np.ones_like(img) * 255  # white canvas
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-edges = cv2.Canny(gray, 20, 100, apertureSize=3)
+edges = cv2.Canny(gray, 90, 100, apertureSize=3)
 
 # Detect lines
 lines = cv2.HoughLines(edges, 1, np.pi / 180, 200)
@@ -86,9 +86,14 @@ img_vp = img.copy()
 for x, y in vanishing_points:
     cv2.circle(img_vp, (x, y), 5, (0, 255, 255), -1)
 
+cv2.imshow("Canny Edges", edges)
 cv2.imshow("Vanishing Points", img_vp)
 cv2.imshow("Hough Lines (Direct)", img_hough)
 cv2.imshow("Homogeneous Lines (From a,b,c)", img_homogeneous)
 
-if cv2.waitKey(33) == ord('a'):
-    cv2.destroyAllWindows()
+key = cv2.waitKey(0)
+while key != 32:  # wait until 'q' is pressed
+    # print(key)
+    key = cv2.waitKey(0)
+
+cv2.destroyAllWindows()    

@@ -35,6 +35,11 @@ pts_real = np.float32([
 
 H, _ = cv2.findHomography(pts_img, pts_real)
 
+print(pts_img)
+print(pts_real)
+
+print(H)
+
 # Guardar matriz
 np.save("RETO_PATOS/homography_matrix/homography_matrix.npy", H)
 print("\n✅ Homography matrix saved as 'homography_matrix.npy'")
