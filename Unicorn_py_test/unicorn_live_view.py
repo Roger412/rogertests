@@ -1,8 +1,10 @@
 import numpy as np
 import os
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from unicorn_c_api_wrapper import Unicorn
+matplotlib.use("TkAgg")
 
 # Initialize API
 unicorn = Unicorn()
@@ -32,7 +34,7 @@ output_file = os.path.join(this_dir, "data", output_file)
 
 # Open device and start acquisition
 handle = unicorn.open_device(devices[choice])
-unicorn.start_acquisition(handle, test_signal=True)
+unicorn.start_acquisition(handle, test_signal=False)
 channel_names = unicorn.get_channel_names(handle)
 
 # Initialize data buffers
@@ -81,7 +83,7 @@ def update_plot(frame):
     if not recording:
         plt.close(fig)
         return
-    num_scans = 100
+    num_scans = 25
     data = unicorn.get_data(handle, num_scans)  # flat list of 170 values
     data = np.reshape(data, (num_scans, unicorn.UNICORN_TOTAL_CHANNELS_COUNT))
 
