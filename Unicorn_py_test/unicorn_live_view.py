@@ -45,31 +45,38 @@ window_size = 250  # 1 second
 buffer = np.zeros((window_size, unicorn.UNICORN_TOTAL_CHANNELS_COUNT))
 samples = []
 
-# Real-time plot setup: 2 subplots (EEG + IMU)
-fig, (ax_eeg, ax_imu) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+# Real-time plot setup: one subplot per channel
+fig, axes = plt.subplots(14, 1, figsize=(10, 16), sharex=True)
 
+ax_eeg_list = axes[:8]  # EEG axes
+ax_imu_list = axes[8:]  # IMU axes
+
+# EEG lines
 eeg_lines = []
-for i in range(eeg_channels):
-    line, = ax_eeg.plot(np.zeros(window_size), label=channel_names[i])
+for i, ax in enumerate(ax_eeg_list):
+    line, = ax.plot(np.zeros(window_size))
+    ax.set_ylabel(channel_names[i], fontsize=8)
+    ax.grid(True)
     eeg_lines.append(line)
+ax_eeg_list[-1].set_xlabel("Samples")
 
+# IMU lines
 imu_lines = []
-for i in range(imu_channels):
-    line, = ax_imu.plot(np.zeros(window_size), label=channel_names[8 + i])
+for i, ax in enumerate(ax_imu_list):
+    line, = ax.plot(np.zeros(window_size))
+    ax.set_ylabel(channel_names[8 + i], fontsize=8)
+    ax.grid(True)
     imu_lines.append(line)
-
-ax_eeg.set_title("EEG Channels")
-ax_imu.set_title("IMU Channels (Accelerometer & Gyroscope)")
-ax_imu.set_xlabel("Samples")
-ax_eeg.legend(loc='upper right', fontsize='small')
-ax_imu.legend(loc='upper right', fontsize='small')
-ax_eeg.grid(True)
-ax_imu.grid(True)
+ax_imu_list[-1].set_xlabel("Samples")
 
 # State variable
 recording = True
 
-# Key event to stop
+
+fig.suptitle("EEG + IMU Channels")
+fig.tight_layout()
+
+# Key event
 def on_key(event):
     global recording
     if event.key == ' ':
@@ -77,36 +84,42 @@ def on_key(event):
 
 fig.canvas.mpl_connect("key_press_event", on_key)
 
-# Animation update
 def update_plot(frame):
     global buffer, recording
     if not recording:
         plt.close(fig)
         return
+
     num_scans = 25
-    data = unicorn.get_data(handle, num_scans)  # flat list of 170 values
+    data = unicorn.get_data(handle, num_scans)
     data = np.reshape(data, (num_scans, unicorn.UNICORN_TOTAL_CHANNELS_COUNT))
 
-    buffer = np.vstack((buffer[num_scans:], data))  # maintain window size
-    samples.extend(data)  # accumulate full recording
+    buffer = np.vstack((buffer[num_scans:], data))
+    samples.extend(data)
 
-    eeg_min, eeg_max = np.min(buffer[:, :eeg_channels]), np.max(buffer[:, :eeg_channels])
-    imu_min, imu_max = np.min(buffer[:, 8:14]), np.max(buffer[:, 8:14])
-
-    ax_eeg.set_ylim(eeg_min - 5, eeg_max + 5)
-    ax_imu.set_ylim(imu_min - 1, imu_max + 1)
-
+    # Update EEG plots
     for i, line in enumerate(eeg_lines):
         line.set_ydata(buffer[:, i])
+        ymin, ymax = np.min(buffer[:, i]), np.max(buffer[:, i])
+        if ymax - ymin > 1e-6:  # Only if signal has variation
+            ax_eeg_list[i].set_ylim(ymin - 0.1 * abs(ymin), ymax + 0.1 * abs(ymax))
+
+    # Update IMU plots
     for i, line in enumerate(imu_lines):
-        line.set_ydata(buffer[:, 8 + i])
+        idx = 8 + i
+        line.set_ydata(buffer[:, idx])
+        ymin, ymax = np.min(buffer[:, idx]), np.max(buffer[:, idx])
+        if ymax - ymin > 1e-6:
+            ax_imu_list[i].set_ylim(ymin - 0.1 * abs(ymin), ymax + 0.1 * abs(ymax))
 
     return eeg_lines + imu_lines
 
-ani = FuncAnimation(fig, update_plot, interval=1000 / sampling_rate)
 
-plt.tight_layout()
+ani = FuncAnimation(fig, update_plot, interval=1000 / sampling_rate, cache_frame_data=False)
+
+plt.get_current_fig_manager().toolbar.pan()
 plt.show()
+
 
 # Stop acquisition and close device
 unicorn.stop_acquisition(handle)
