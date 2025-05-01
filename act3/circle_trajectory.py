@@ -1,6 +1,7 @@
 import time
 from djitellopy import Tello
 from threading import Thread
+import math
 
 # Function to constantly print telemetry
 def telemetry_loop(tello: Tello, stop_flag):
@@ -25,17 +26,32 @@ stop_flag = {"stop": False}
 telemetry_thread = Thread(target=telemetry_loop, args=(tello, stop_flag))
 telemetry_thread.start()
 
-try:
-    # Move right and forward with slight yaw to simulate a circle
-    tello.send_rc_control(30, 30, 0, 20)
-    time.sleep(8)
+R = 50      # radius scaled to drone speed
+omega = 2 * math.pi / 5  # complete circle in 5 seconds
+duration = 6             # flight time
+dt = 0.05                # timestep (s)
+n_steps = int(duration / dt)
 
+trajectory = []
+for i in range(n_steps):
+    t = i * dt
+    vx = int(-R * math.sin(omega * t))
+    vy = int(R * math.cos(omega * t))
+    trajectory.append((vx, vy))
+
+vx = max(-100, min(100, int(-R * math.sin(omega * t))))
+vy = max(-100, min(100, int(R * math.cos(omega * t))))
+
+time.sleep(1)
+
+try:
+    for vx, vy in trajectory:
+        tello.send_rc_control(vx, vy, 0, 0)
+        time.sleep(dt)
+finally:
     # Stop motion
     tello.send_rc_control(0, 0, 0, 0)
-    time.sleep(1)
-finally:
     stop_flag["stop"] = True
     telemetry_thread.join()
-
     tello.land()
     tello.end()
