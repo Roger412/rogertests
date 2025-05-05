@@ -2,7 +2,7 @@ import os
 import random
 import shutil
 
-base_path = "RETO_PATOS/patos_dataset"
+base_path = "RETO_PATOS/YOLO_dataset_improved"
 images_dir = os.path.join(base_path, "images")
 labels_dir = os.path.join(base_path, "labels")
 

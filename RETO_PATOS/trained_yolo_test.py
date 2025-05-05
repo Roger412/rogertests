@@ -3,7 +3,7 @@ import numpy as np
 from ultralytics import YOLO
 
 # Cargar modelo entrenado
-model = YOLO('runs/detect/train5/weights/best.pt')
+model = YOLO('runs/detect/train6/weights/best.pt')
 
 # Cargar matriz de homografía
 H = np.load("RETO_PATOS/homography_matrix/homography_matrix.npy")
