@@ -4,6 +4,4 @@ venv_xpu/
 # VSCode settings (optional)
 .vscode/
 
-RETO_PATOS/patos_dataset
-
 RETO_PATOS/video_droid.npz
