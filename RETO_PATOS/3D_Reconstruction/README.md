@@ -2,7 +2,7 @@ to view run
 
 rviz2
 
-ros2 run robot_state_publisher robot_state_publisher /home/roger/ROS2_ws/src/articulated_robotics2/urdf/cuarto.urdf.xacro
+ros2 run robot_state_publisher robot_state_publisher /home/roger/Github/rogertests/rogertests/RETO_PATOS/3D_Reconstruction/cuarto.urdf.xacro
 
 
 

@@ -5,3 +5,5 @@ venv_xpu/
 .vscode/
 
 RETO_PATOS/patos_dataset
+
+RETO_PATOS/video_droid.npz
