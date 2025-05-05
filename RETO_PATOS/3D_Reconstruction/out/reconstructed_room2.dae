@@ -1,11 +1,11 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset>
-    <created>2025-05-03T19:36:42.131413</created>
-    <modified>2025-05-03T19:36:42.131421</modified>
+    <created>2025-05-05T00:32:22.082814</created>
+    <modified>2025-05-05T00:32:22.082827</modified>
     <up_axis>Y_UP</up_axis>
   </asset>
   <library_effects>
-    <effect id="e7c218ea41134004ac2fa761293586dd" name="e7c218ea41134004ac2fa761293586dd">
+    <effect id="8adba8e94020429e98e1757e5332ec93" name="8adba8e94020429e98e1757e5332ec93">
       <profile_COMMON>
         <technique sid="common">
           <phong>
@@ -47,7 +47,7 @@
     </effect>
   </library_effects>
   <library_geometries>
-    <geometry id="af50274c589b4c0e9e58ee44b0c4246e" name="7e06e35d27394551ae86903a2be22eff">
+    <geometry id="b48ba4001db047f2bbea2e66132f9ee7" name="75a87eea872342b6b4c2a8156dd314f7">
       <mesh>
         <source id="verts-array">
           <float_array count="24" id="verts-array-array">0 0 0 1 0 0 1 1 0 0 1 0 0 1 -2 0 0 -2 1 1 -2 1 0 -2</float_array>
@@ -81,17 +81,17 @@
     </geometry>
   </library_geometries>
   <library_materials>
-    <material id="38a63ed3d4ca4e2b9ba944d8d6630714" name="defaultmaterial">
-      <instance_effect url="#e7c218ea41134004ac2fa761293586dd"/>
+    <material id="40989e7850334d75a0041ae2820756c6" name="defaultmaterial">
+      <instance_effect url="#8adba8e94020429e98e1757e5332ec93"/>
     </material>
   </library_materials>
   <library_visual_scenes>
     <visual_scene id="scene">
       <node id="node0" name="node0">
-        <instance_geometry url="#af50274c589b4c0e9e58ee44b0c4246e">
+        <instance_geometry url="#b48ba4001db047f2bbea2e66132f9ee7">
           <bind_material>
             <technique_common>
-              <instance_material symbol="material0" target="#38a63ed3d4ca4e2b9ba944d8d6630714"/>
+              <instance_material symbol="material0" target="#40989e7850334d75a0041ae2820756c6"/>
             </technique_common>
           </bind_material>
         </instance_geometry>
