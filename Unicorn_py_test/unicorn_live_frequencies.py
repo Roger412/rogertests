@@ -142,7 +142,7 @@ class UnicornLiveViewer(QtWidgets.QMainWindow):
 
         # ---------------- TOP RIGHT (EEG Frequency Domain) ----------------
         freq_section = QtWidgets.QVBoxLayout()
-        freq_label = QtWidgets.QLabel("📊 EEG Channels (Frequency Domain)")
+        freq_label = QtWidgets.QLabel("📊 FFT per EEG Channel (Frequency Domain)")
         freq_label.setAlignment(QtCore.Qt.AlignCenter)
         freq_label.setStyleSheet("font-size: 18px;")
         freq_section.addWidget(freq_label)
