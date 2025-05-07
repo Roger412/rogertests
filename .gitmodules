@@ -1,0 +1,3 @@
+[submodule "stm32omnibase"]
+	path = stm32omnibase
+	url = https://github.com/Roger412/stm32omnibase.git
