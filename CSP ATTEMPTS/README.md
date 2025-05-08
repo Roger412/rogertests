@@ -1,6 +1,6 @@
 # 🧠 Motor Imagery BCI with Unicorn
 
-This project implements a basic EEG-based BCI (Brain-Computer Interface) using the Unicorn Hybrid Black device. It uses CSP + LDA to classify left vs right motor imagery in real time.
+This project attempts to implement a basic EEG-based BCI (Brain-Computer Interface) using the Unicorn Hybrid Black device. It uses CSP + LDA to classify left vs right motor imagery in real time.
 
 ---
 
