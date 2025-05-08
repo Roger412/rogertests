@@ -5,7 +5,7 @@ from unicorn_c_api_wrapper import Unicorn
 
 # --- CONFIG ---
 MODEL_PATH = "models/csp_lda_model.pkl"
-WINDOW_LENGTH = 5.0  # seconds
+WINDOW_LENGTH = 5.0  # seconds MUST BE SAME AS TRAINING DATA TRIAL WINDOW???
 SAMPLE_RATE = 250
 CHANNEL_COUNT = 8  # adjust if different
 LABELS = ["Left", "Right"]  # assumes 0 = left, 1 = right
