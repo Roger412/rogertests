@@ -50,7 +50,7 @@ def receiver():
     ➤ Ctrl Inertial Speeds: x_dot={data.get('Ctrl_Inertial_x_dot', 0):.3f}, y_dot={data.get('Ctrl_Inertial_y_dot', 0):.3f}, phi_dot={data.get('Ctrl_Inertial_phi_dot', 0):.3f}
     ➤ Ctrl Wheel Speeds:    u1={data.get('Ctrl_necc_u1', 0):.3f}, u2={data.get('Ctrl_necc_u2', 0):.3f}, u3={data.get('Ctrl_necc_u3', 0):.3f}, u4={data.get('Ctrl_necc_u4', 0):.3f}
     ➤ Loop Timing:         current={data.get('ts_current', 0):.3f}, previous={data.get('ts_previous', 0):.3f}, delta={data.get('ts_delta', 0):.3f}
-    ➤ Ctrl PWM Values:     PWM1={data.get('Ctrl_PWM_u1', 0):.3f}, PWM2={data.get('Ctrl_PWM_u2', 0):.3f}, PWM3={data.get('Ctrl_PWM_u3', 0):.3f}, PWM4={data.get('Ctrl_PWM_u4', 0):.3f}
+    ➤ Ctrl PWM Values:     PWM1={data.get('Ctrl_duty_u1', 0):.3f}, PWM2={data.get('Ctrl_duty_u2', 0):.3f}, PWM3={data.get('Ctrl_duty_u3', 0):.3f}, PWM4={data.get('Ctrl_duty_u4', 0):.3f}
                 """)
 
                 # Optional: use the data dict for logging, plotting, etc.
