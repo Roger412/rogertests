@@ -6,6 +6,7 @@ if __name__ == '__main__':
 
     try:
         # Connect to drone
+        tello = Tello(host="192.168.12.6")
         tello.connect()
         print("✅ Connected to Tello")
 
