@@ -7,7 +7,7 @@ import re
 ser = serial.Serial('COM11', 115200, timeout=0.2)
 
 # Shared variable for desired pose
-desired_pose = [6, 3, 0.5, 1.0, 1.0]
+desired_pose = [6, 3, 0.5, 1.0, 1.0, 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 4.1, 4.2, 4.3, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3]
 count = 0
 
 # Sending thread: sends control goals periodically
@@ -49,11 +49,17 @@ def receiver():
     ➤ Pose Errors:          dx={data.get('ODOM_Err_x', 0):.3f}, dy={data.get('ODOM_Err_y', 0):.3f}, dphi={data.get('ODOM_Err_phi', 0):.3f}
     ➤ Ctrl Inertial Speeds: x_dot={data.get('Ctrl_Inertial_x_dot', 0):.3f}, y_dot={data.get('Ctrl_Inertial_y_dot', 0):.3f}, phi_dot={data.get('Ctrl_Inertial_phi_dot', 0):.3f}
     ➤ Ctrl Wheel Speeds:    u1={data.get('Ctrl_necc_u1', 0):.3f}, u2={data.get('Ctrl_necc_u2', 0):.3f}, u3={data.get('Ctrl_necc_u3', 0):.3f}, u4={data.get('Ctrl_necc_u4', 0):.3f}
-    ➤ Loop Timing:         current={data.get('ts_current', 0):.3f}, previous={data.get('ts_previous', 0):.3f}, delta={data.get('ts_delta', 0):.3f}
-    ➤ Ctrl PWM Values:     PWM1={data.get('Ctrl_duty_u1', 0):.3f}, PWM2={data.get('Ctrl_duty_u2', 0):.3f}, PWM3={data.get('Ctrl_duty_u3', 0):.3f}, PWM4={data.get('Ctrl_duty_u4', 0):.3f}
+    ➤ Loop Timing:          current={data.get('ts_current', 0):.0f}, previous={data.get('ts_previous', 0):.0f}, delta={data.get('ts_delta', 0):.0f}
+    ➤ Ctrl PWM Values:      PWM1={data.get('Ctrl_duty_u1', 0):.0f}, PWM2={data.get('Ctrl_duty_u2', 0):.0f}, PWM3={data.get('Ctrl_duty_u3', 0):.0f}, PWM4={data.get('Ctrl_duty_u4', 0):.0f}
+    ➤ PID Gains:
+        x:    Kp={data.get('xKp', 0):.3f}, Ki={data.get('xKi', 0):.3f}, Kd={data.get('xKd', 0):.3f}
+        y:    Kp={data.get('yKp', 0):.3f}, Ki={data.get('yKi', 0):.3f}, Kd={data.get('yKd', 0):.3f}
+        phi:  Kp={data.get('phiKp', 0):.3f}, Ki={data.get('phiKi', 0):.3f}, Kd={data.get('phiKd', 0):.3f}
+        u0:   Kp={data.get('u0Kp', 0):.3f}, Ki={data.get('u0Ki', 0):.3f}, Kd={data.get('u0Kd', 0):.3f}
+        u1:   Kp={data.get('u1Kp', 0):.3f}, Ki={data.get('u1Ki', 0):.3f}, Kd={data.get('u1Kd', 0):.3f}
+        u2:   Kp={data.get('u2Kp', 0):.3f}, Ki={data.get('u2Ki', 0):.3f}, Kd={data.get('u2Kd', 0):.3f}
+        u3:   Kp={data.get('u3Kp', 0):.3f}, Ki={data.get('u3Ki', 0):.3f}, Kd={data.get('u3Kd', 0):.3f}
                 """)
-
-                # Optional: use the data dict for logging, plotting, etc.
 
             except Exception as e:
                 print("❌ UART RX Error:", e)
