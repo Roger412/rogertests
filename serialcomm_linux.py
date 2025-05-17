@@ -1,3 +1,4 @@
+# same code, different port
 import serial
 import threading
 import time
