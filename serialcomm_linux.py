@@ -7,7 +7,7 @@ import re
 # Configure serial port
 ser = serial.Serial('/dev/ttyACM0', 115200, timeout=0.2)
 
-# Shared variable for desired pose
+# Shared variable for desired pose + PID GAINS
 desired_pose = [6, 3, 0.5, 1.0, 1.0, 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 4.1, 4.2, 4.3, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3]
 count = 0
 
