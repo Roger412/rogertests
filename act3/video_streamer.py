@@ -4,7 +4,7 @@ from djitellopy import Tello
 import cv2
 
 # Connect to Tello and start stream
-tello = Tello()
+tello = Tello(host="192.168.12.6")
 tello.connect()
 tello.streamon()
 

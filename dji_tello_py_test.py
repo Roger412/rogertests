@@ -1,7 +1,7 @@
 from djitellopy import Tello
 
-tello = Tello()
-
+# Replace with IP discovered in step 3
+tello = Tello(host="192.168.12.6")
 tello.connect()
-battery = tello.get_battery()
-print(f"🔋 Battery level: {battery}%")
+
+print("Battery level:", tello.get_battery())

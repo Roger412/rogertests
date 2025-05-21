@@ -20,7 +20,7 @@ This guide explains how to connect your DJI Tello drone to a computer-hosted Wi-
 
 ## 📶 Step 1: Create a Wi-Fi Hotspot
 
-Launch `linux-wifi-hotspot` and configure it as follows:
+Launch `linux-wifi-hotspot` with the command `wihotspot` and configure it as follows:
 
 | Field               | Value         |
 |--------------------|---------------|
