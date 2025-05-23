@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 def detect_colored_circles(frame):
-    output = frame.copy()
+    output = frame.copy() 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Define color ranges in HSV
