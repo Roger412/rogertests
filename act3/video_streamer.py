@@ -7,6 +7,7 @@ import cv2
 tello = Tello(host="192.168.12.6")
 tello.connect()
 tello.streamon()
+tello.set_video_direction(Tello.CAMERA_DOWNWARD)
 
 # Set up the figure and image object
 fig, ax = plt.subplots()

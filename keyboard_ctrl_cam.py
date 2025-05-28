@@ -2,6 +2,10 @@ from djitellopy import Tello
 from pynput import keyboard
 import threading
 import time
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import cv2
+import numpy as np
 
 # Initialize drone
 tello = Tello(host="192.168.12.6")
@@ -9,22 +13,28 @@ tello.connect()
 tello.streamon()
 tello.takeoff()
 
-# Velocity variables (range -100 to 100)
-forward_backward = 0    # x-axis (Z/X)
-forward_backward_magnitude = 0    # x-axis (Z/X)
+# Default camera direction
+current_camera = Tello.CAMERA_FORWARD
+tello.set_video_direction(current_camera)
+frame_read = tello.get_frame_read()
 
-left_right = 0    # x-axis (Z/X)
-left_right_magnitude = 0    # x-axis (Z/X)
-
-up_down = 0       # z-axis (W/S)
-up_down_magnitude = 0       # z-axis (W/S)
-
-yaw = 0           # yaw (A/D)
-yaw_magnitude = 0           # yaw (A/D)
+# Velocity variables
+forward_backward = 0
+forward_backward_magnitude = 0
+left_right = 0
+left_right_magnitude = 0
+up_down = 0
+up_down_magnitude = 0
+yaw = 0
+yaw_magnitude = 0
 
 lock = threading.Lock()
 
-# Send RC control in a loop
+# HSV bounds for green
+lower_green = np.array([35, 100, 100])
+upper_green = np.array([85, 255, 255])
+
+# RC control loop
 def control_loop():
     while True:
         with lock:
@@ -37,6 +47,7 @@ threading.Thread(target=control_loop, daemon=True).start()
 def on_press(key):
     global left_right, up_down, yaw, forward_backward
     global forward_backward_magnitude, left_right_magnitude, up_down_magnitude, yaw_magnitude
+    global current_camera
 
     try:
         k = key.char.lower()
@@ -45,14 +56,12 @@ def on_press(key):
                 forward_backward = forward_backward_magnitude
             elif k == 's':
                 forward_backward = -forward_backward_magnitude
-
             elif k == 'r':
                 if forward_backward_magnitude + 2 <= 100:
                     forward_backward_magnitude += 2
             elif k == 'f':
                 if forward_backward_magnitude - 2 >= 0:
                     forward_backward_magnitude -= 2
-
             elif k == 'e':
                 yaw = yaw_magnitude
             elif k == 'q':
@@ -63,7 +72,6 @@ def on_press(key):
             elif k == 'j':
                 if yaw_magnitude - 2 >= 0:
                     yaw_magnitude -= 2
-
             elif k == 'z':
                 up_down = up_down_magnitude
             elif k == 'x':
@@ -74,7 +82,6 @@ def on_press(key):
             elif k == 'g':
                 if up_down_magnitude - 2 >= 0:
                     up_down_magnitude -= 2
-
             elif k == 'a':
                 left_right = -left_right_magnitude
             elif k == 'd':
@@ -85,10 +92,17 @@ def on_press(key):
             elif k == 'h':
                 if left_right_magnitude - 2 >= 0:
                     left_right_magnitude -= 2
-
+            elif k == 'c':
+                if current_camera == Tello.CAMERA_FORWARD:
+                    current_camera = Tello.CAMERA_DOWNWARD
+                    print("📷 Switched to bottom camera")
+                else:
+                    current_camera = Tello.CAMERA_FORWARD
+                    print("📷 Switched to front camera")
+                tello.set_video_direction(current_camera)
+                time.sleep(0.5)
     except AttributeError:
         pass
-
 
 # Key release handler
 def on_release(key):
@@ -111,14 +125,54 @@ def on_release(key):
 listener = keyboard.Listener(on_press=on_press, on_release=on_release)
 listener.start()
 
-print("🕹️ Control: Q/E = yaw | W/S = forward/backward | A/D = left/right | Z/X = up/down")
-print("Press ESC to land and exit...")
+# Setup matplotlib figure
+fig, ax = plt.subplots()
+frame = frame_read.frame
+frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+im = ax.imshow(frame_rgb)
+ax.axis("off")
+fig.canvas.manager.set_window_title("Tello Camera + Green Detection")
 
+# For RGB on mouse hover
+latest_rgb_frame = frame_rgb.copy()
+def on_mouse_move(event):
+    if event.xdata is not None and event.ydata is not None:
+        x, y = int(event.xdata), int(event.ydata)
+        if 0 <= y < latest_rgb_frame.shape[0] and 0 <= x < latest_rgb_frame.shape[1]:
+            r, g, b = latest_rgb_frame[y, x]
+            fig.canvas.manager.set_window_title(f"RGB at ({x},{y}): R={r}, G={g}, B={b}")
+
+fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
+
+# Frame update with green detection
+def update(*args):
+    global latest_rgb_frame
+    frame = frame_read.frame
+
+    # 🔄 Convert BGR to HSV for masking
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lower_green, upper_green)
+
+    # 🎯 Find green object centroid
+    M = cv2.moments(mask)
+    if M["m00"] > 0:
+        cx = int(M["m10"] / M["m00"])
+        cy = int(M["m01"] / M["m00"])
+        cv2.circle(frame, (cx, cy), 6, (0, 0, 255), -1)  # draw in BGR
+
+    # 🔁 Now convert to RGB **after** drawing
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    latest_rgb_frame = frame_rgb.copy()
+    im.set_array(frame_rgb)
+    return [im]
+
+
+# Start animation loop
+ani = animation.FuncAnimation(fig, update, interval=50, cache_frame_data=False)
+
+print("🕹️ Drone control ready. Press 'C' to switch cameras. Close window to land.")
 try:
-    while True:
-        time.sleep(0.1)
-except KeyboardInterrupt:
-    pass
+    plt.show()
 finally:
     print("🛬 Landing...")
     tello.send_rc_control(0, 0, 0, 0)
