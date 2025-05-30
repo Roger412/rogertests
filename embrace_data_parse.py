@@ -117,6 +117,15 @@ durations = re.findall(r'DURATION:\s+([0-9.]+)', data)
 # Convert to float
 durations = [float(d) for d in durations]
 
+count = 0
 for a in durations:
+    if (a - 4 < 5):
+        count += 1
     print(a)
-    
+
+print("min")    
+print(min(durations))
+print("max")    
+print(max(durations))
+print("count")
+print(count)
