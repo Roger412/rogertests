@@ -11,6 +11,25 @@ class EKFTricycleState:
             bias_imu,   # accelerometer bias
             bias_gyro   # gyroscope bias
         ], dtype=float)
+        self.P = np.eye(7) * 0.1  # Initial state uncertainty (can be tuned)
+
+        self.Q = np.diag([
+            0.01,   # x noise
+            0.01,   # y noise
+            0.001,  # theta noise
+            0.05,   # linear velocity noise
+            0.02,   # angular velocity noise
+            0.01,   # accelerometer bias drift
+            0.005   # gyro bias drift
+        ])
+
+        self.R = np.diag([
+            0.02,   # encoder v noise
+            0.01,   # encoder omega noise
+            0.005,  # gyro noise
+            0.05    # IMU forward acceleration noise
+        ])
+
 
     def __getitem__(self, index):
         return self.x[index]
@@ -94,3 +113,41 @@ class EKFTricycleState:
         H[3, 5] = 1.0
 
         return H
+    
+    def ekf_step(self, dt, u_k, v_cmd_prev, z_k):
+        """
+        Executes one full EKF step: prediction + correction.
+
+        Parameters:
+        - dt: time step
+        - u_k: current control input [v_cmd, omega_cmd]
+        - v_cmd_prev: previous velocity command (for dv_approx)
+        - z_k: current measurement vector [v_enc, omega_enc, gyro, accel]
+        """
+
+        # ---- PREDICTION STEP ----
+        A = self.jacobian_A(dt)
+        self.predict_state(dt, u_k)  # updates self.x
+        self.P = A @ self.P @ A.T + self.Q
+
+        # ---- MEASUREMENT UPDATE ----
+        dv_approx = (u_k[0] - v_cmd_prev) / dt
+        H = self.jacobian_H(dt)
+        z_pred = self.h(dv_approx)
+        y = z_k - z_pred                       # innovation
+        S = H @ self.P @ H.T + self.R          # innovation covariance
+        K = self.P @ H.T @ np.linalg.inv(S)    # Kalman gain
+
+        # Update state estimate and covariance
+        self.x += K @ y
+        I = np.eye(len(self.x))
+        self.P = (I - K @ H) @ self.P
+
+
+    def get_pose(self):
+        return self.x[0], self.x[1], self.x[2]
+
+    def reset(self, x0=None, P0=None):
+        self.x = np.zeros_like(self.x) if x0 is None else np.array(x0, dtype=float)
+        self.P = np.eye(7) * 0.1 if P0 is None else np.array(P0, dtype=float)
+
