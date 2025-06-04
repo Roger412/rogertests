@@ -30,6 +30,10 @@ class EKFTricycleState:
             0.05    # IMU forward acceleration noise
         ])
 
+        self.measurement_history = []
+        self.encoder_history = []
+        self.t_start = None
+
 
     def __getitem__(self, index):
         return self.x[index]
@@ -150,4 +154,61 @@ class EKFTricycleState:
     def reset(self, x0=None, P0=None):
         self.x = np.zeros_like(self.x) if x0 is None else np.array(x0, dtype=float)
         self.P = np.eye(7) * 0.1 if P0 is None else np.array(P0, dtype=float)
+
+
+    def record_measurement(self, z_k, u_k, timestamp):
+        if self.t_start is None:
+            self.t_start = timestamp
+        self.measurement_history.append((timestamp, z_k.copy()))
+        self.encoder_history.append((timestamp, u_k[0]))  # only store v_cmd
+
+    def compute_measurement_noise(self, duration=5.0):
+        """
+        Compute R from measurements during static period.
+        duration: time window in seconds
+        """
+        if not self.measurement_history:
+            return
+
+        # Filter last N seconds of data
+        t_end = self.measurement_history[-1][0]
+        z_data = np.array([
+            z for t, z in self.measurement_history if (t_end - t) <= duration
+        ])
+
+        if z_data.shape[0] < 2:
+            print("Not enough data to estimate R.")
+            return
+
+        variances = np.var(z_data, axis=0)
+        self.R = np.diag(variances)
+        print("Updated R:\n", self.R)
+
+    def compute_process_noise(self, duration=5.0):
+        """
+        Estimate Q by comparing encoder velocity vs. commanded velocity over time.
+        Assumes encoder velocity is part of measurement[0].
+        """
+        if not self.encoder_history or not self.measurement_history:
+            return
+
+        t_end = self.measurement_history[-1][0]
+
+        # Get paired encoder and command values over last duration
+        error_v = []
+        for (t1, z), (t2, v_cmd) in zip(self.measurement_history, self.encoder_history):
+            if abs(t_end - t1) <= duration:
+                v_enc = z[0]  # assuming z[0] = encoder linear velocity
+                error_v.append(v_enc - v_cmd)
+
+        if len(error_v) < 2:
+            print("Not enough data to estimate Q.")
+            return
+
+        # Estimate variance of velocity prediction error
+        q_v = np.var(error_v)
+
+        # Update Q matrix (only for v; others stay the same or can be done similarly)
+        self.Q[3, 3] = q_v
+        print("Updated Q (v component):\n", self.Q)
 
