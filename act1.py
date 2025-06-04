@@ -2,11 +2,10 @@ from djitellopy import Tello
 import time
 
 if __name__ == '__main__':
-    tello = Tello()
-
     try:
         # Connect to drone
-        tello = Tello(host="192.168.12.6")
+        # tello = Tello(host="192.168.12.6")
+        tello = Tello()
         tello.connect()
         print("✅ Connected to Tello")
 
@@ -14,9 +13,13 @@ if __name__ == '__main__':
         battery = tello.get_battery()
         print(f"🔋 Battery level: {battery}%")
 
+        tello.send_command_with_return("command")
+        time.sleep(0.5)
+
         # Takeoff
         tello.takeoff()
         print("🛫 Tello took off")
+        print(tello.get_current_state())
 
         # Hover and print telemetry for 10 seconds
         for i in range(10):
