@@ -8,16 +8,31 @@ import time
 import cv2
 import numpy as np
 import logging
+import matplotlib.gridspec as gridspec
 logging.getLogger('djitellopy').setLevel(logging.CRITICAL)
 # === Drone Setup ===
-# tello = Tello(host="192.168.12.6")
-tello = Tello()
+tello = Tello(host="192.168.12.6")
+# tello = Tello()
 tello.connect()
 tello.streamon()
 
 current_camera = Tello.CAMERA_FORWARD
 tello.set_video_direction(current_camera)
 frame_read = tello.get_frame_read()
+
+# Detection defaults — no sliders
+LOWER_GREEN = np.array([35, 40, 40], dtype=np.uint8)
+UPPER_GREEN = np.array([85,255,255], dtype=np.uint8)
+
+DETECT_PARAMS = {
+  "param1": 80,
+  "param2": 20,
+  "min_radius": 20,
+  "max_radius": 200,
+  "min_area": 300,
+  "max_area": 10000,
+  "circularity_threshold": 0.7
+}
 
 
 # === Follow mode toggle ===
@@ -122,40 +137,62 @@ def on_release(key):
 
 keyboard.Listener(on_press=on_press, on_release=on_release).start()
 
-# === Matplotlib Setup ===
-fig, ax = plt.subplots()
 frame = frame_read.frame
-im = ax.imshow(frame)
-# Adjust figure to fit sliders
-plt.subplots_adjust(left=0.25, bottom=0.4)
 
-# Create slider axes
-ax_kp_yaw = plt.axes([0.25, 0.33, 0.65, 0.03])
-ax_ki_yaw = plt.axes([0.25, 0.29, 0.65, 0.03])
-ax_kd_yaw = plt.axes([0.25, 0.25, 0.65, 0.03])
-ax_kp_z = plt.axes([0.25, 0.21, 0.65, 0.03])
-ax_ki_z = plt.axes([0.25, 0.17, 0.65, 0.03])
-ax_kd_z = plt.axes([0.25, 0.13, 0.65, 0.03])
-# === Forward/Backward PID sliders ===
-ax_kp_fb = plt.axes([0.25, 0.09, 0.65, 0.03])
-ax_ki_fb = plt.axes([0.25, 0.05, 0.65, 0.03])
-ax_kd_fb = plt.axes([0.25, 0.01, 0.65, 0.03])
-ax_target_distance = plt.axes([0.05, 0.5, 0.0225, 0.35])  # Vertical slider
 
-# Create sliders
-slider_kp_yaw = Slider(ax_kp_yaw, 'Kp Yaw', 0.0, 10.0, valinit=pid_yaw.Kp)
-slider_ki_yaw = Slider(ax_ki_yaw, 'Ki Yaw', 0.0, 1.0, valinit=pid_yaw.Ki)
-slider_kd_yaw = Slider(ax_kd_yaw, 'Kd Yaw', 0.0, 1.0, valinit=pid_yaw.Kd)
-slider_kp_z = Slider(ax_kp_z, 'Kp Z', 0.0, 10.0, valinit=pid_z.Kp)
-slider_ki_z = Slider(ax_ki_z, 'Ki Z', 0.0, 1.0, valinit=pid_z.Ki)
-slider_kd_z = Slider(ax_kd_z, 'Kd Z', 0.0, 1.0, valinit=pid_z.Kd)
-slider_kp_fb = Slider(ax_kp_fb, 'Kp FB', 0.0, 10.0, valinit=pid_fb.Kp)
-slider_ki_fb = Slider(ax_ki_fb, 'Ki FB', 0.0, 1.0, valinit=pid_fb.Ki)
-slider_kd_fb = Slider(ax_kd_fb, 'Kd FB', 0.0, 1.0, valinit=pid_fb.Kd)
-slider_target_distance = Slider(ax_target_distance, 'Target\nDist', 5.0, 50.0, valinit=target_distance_cm, orientation='vertical')
+# === Main Display Figure ===
+fig_main = plt.figure("Tello View", figsize=(8, 6))  # Camera feed
+ax_image = fig_main.add_subplot(1, 2, 1)
+ax_mask = fig_main.add_subplot(1, 2, 2)
 
-ax.axis("off")
-fig.canvas.manager.set_window_title("Tello Circle Detection")
+ax_image.axis("off")
+ax_mask.axis("off")
+ax_image.set_title("Drone Camera View")
+ax_mask.set_title("Binary Green Mask")
+
+im = ax_image.imshow(frame)
+fig_sliders = plt.figure("All Sliders", figsize=(9, 8))  # Combined sliders
+
+im = ax_image.imshow(frame)
+mask_im = ax_mask.imshow(np.zeros_like(frame[:, :, 0]), cmap='gray')
+
+
+# === Detection Sliders ===
+# fig_det = plt.figure("Detection Sliders", figsize=(3, 7))
+# fig_pid1 = plt.figure("PID Yaw/Z Sliders", figsize=(4, 7))
+# fig_pid2 = plt.figure("PID FB + Distance", figsize=(4, 7))
+
+# Column 1: Detection sliders
+s_param1 = Slider(fig_sliders.add_axes([0.05, 0.86, 0.2, 0.03]), "P1", 1, 200, valinit=100)
+s_param2 = Slider(fig_sliders.add_axes([0.05, 0.80, 0.2, 0.03]), "P2", 1, 100, valinit=50)
+s_minR   = Slider(fig_sliders.add_axes([0.05, 0.74, 0.2, 0.03]), "MinR", 1, 200, valinit=40)
+s_maxR   = Slider(fig_sliders.add_axes([0.05, 0.68, 0.2, 0.03]), "MaxR", 1, 300, valinit=150)
+s_minA   = Slider(fig_sliders.add_axes([0.05, 0.62, 0.2, 0.03]), "MinA", 0, 10000, valinit=300)
+s_maxA   = Slider(fig_sliders.add_axes([0.05, 0.56, 0.2, 0.03]), "MaxA", 0, 20000, valinit=10000)
+s_circ   = Slider(fig_sliders.add_axes([0.05, 0.50, 0.2, 0.03]), "Circ", 0.0, 1.0, valinit=0.7)
+s_hmin = Slider(fig_sliders.add_axes([0.05, 0.44, 0.2, 0.03]), 'H Min', 0, 179, valinit=35)
+s_hmax = Slider(fig_sliders.add_axes([0.05, 0.38, 0.2, 0.03]), 'H Max', 0, 179, valinit=85)
+s_smin = Slider(fig_sliders.add_axes([0.05, 0.32, 0.2, 0.03]), 'S Min', 0, 255, valinit=40)
+s_smax = Slider(fig_sliders.add_axes([0.05, 0.26, 0.2, 0.03]), 'S Max', 0, 255, valinit=255)
+s_vmin = Slider(fig_sliders.add_axes([0.05, 0.20, 0.2, 0.03]), 'V Min', 0, 255, valinit=40)
+s_vmax = Slider(fig_sliders.add_axes([0.05, 0.14, 0.2, 0.03]), 'V Max', 0, 255, valinit=255)
+
+# Column 2: PID Yaw/Z
+slider_kp_yaw = Slider(fig_sliders.add_axes([0.38, 0.86, 0.2, 0.03]), 'Kp Yaw', 0.0, 10.0, valinit=pid_yaw.Kp)
+slider_ki_yaw = Slider(fig_sliders.add_axes([0.38, 0.80, 0.2, 0.03]), 'Ki Yaw', 0.0, 1.0, valinit=pid_yaw.Ki)
+slider_kd_yaw = Slider(fig_sliders.add_axes([0.38, 0.74, 0.2, 0.03]), 'Kd Yaw', 0.0, 1.0, valinit=pid_yaw.Kd)
+
+slider_kp_z = Slider(fig_sliders.add_axes([0.38, 0.68, 0.2, 0.03]), 'Kp Z', 0.0, 10.0, valinit=pid_z.Kp)
+slider_ki_z = Slider(fig_sliders.add_axes([0.38, 0.62, 0.2, 0.03]), 'Ki Z', 0.0, 1.0, valinit=pid_z.Ki)
+slider_kd_z = Slider(fig_sliders.add_axes([0.38, 0.56, 0.2, 0.03]), 'Kd Z', 0.0, 1.0, valinit=pid_z.Kd)
+
+# Column 3: PID FB + Distance
+slider_kp_fb = Slider(fig_sliders.add_axes([0.70, 0.86, 0.2, 0.03]), 'Kp FB', 0.0, 10.0, valinit=pid_fb.Kp)
+slider_ki_fb = Slider(fig_sliders.add_axes([0.70, 0.80, 0.2, 0.03]), 'Ki FB', 0.0, 1.0, valinit=pid_fb.Ki)
+slider_kd_fb = Slider(fig_sliders.add_axes([0.70, 0.74, 0.2, 0.03]), 'Kd FB', 0.0, 1.0, valinit=pid_fb.Kd)
+slider_target_distance = Slider(fig_sliders.add_axes([0.70, 0.68, 0.2, 0.03]), 'Target Dist', 5.0, 50.0, valinit=target_distance_cm)
+
+
 
 latest_rgb_frame = frame.copy()
 def on_mouse_move(event):
@@ -163,38 +200,84 @@ def on_mouse_move(event):
         x, y = int(event.xdata), int(event.ydata)
         if 0 <= y < latest_rgb_frame.shape[0] and 0 <= x < latest_rgb_frame.shape[1]:
             r, g, b = latest_rgb_frame[y, x]
-            fig.canvas.manager.set_window_title(f"RGB at ({x},{y}): R={r}, G={g}, B={b}")
-fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
+            fig_main.canvas.manager.set_window_title(f"RGB at ({x},{y}): R={r}, G={g}, B={b}")
+fig_main.canvas.mpl_connect('motion_notify_event', on_mouse_move)
 
-# === Green Circle Detection ===
-def detect_green_circles(image):
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, lower_green, upper_green)
-    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((5,5),np.uint8))
-    blurred = cv2.GaussianBlur(mask, (9, 9), 2)
+def detect_green_circles(image,
+                         lower_hsv, upper_hsv,
+                         param1, param2,
+                         min_radius, max_radius,
+                         min_area, max_area,
+                         circularity_threshold):
+    """
+    Returns:
+      - image with drawn detections
+      - binary mask
+      - list of (x,y,r) for each accepted circle  
+    """
+    hsv  = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
 
-    circles = cv2.HoughCircles(blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=50,
-                               param1=100, param2=50, minRadius=40, maxRadius=150)
+    # morphology from script #1
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7,7))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=2)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN,  kernel, iterations=1)
+
+    blurred = cv2.GaussianBlur(mask, (5,5), 1)
+    circles = cv2.HoughCircles(
+        blurred, cv2.HOUGH_GRADIENT,
+        dp=1.0, minDist=30,
+        param1=param1, param2=param2,
+        minRadius=int(min_radius), maxRadius=int(max_radius)
+    )
+
+    accepted = []
     if circles is not None:
-        circles = np.round(circles[0, :]).astype("int")
-        for (x, y, r) in circles:
-            if mask[y, x] > 0:
-                diameter = 2 * r
-                distance_cm = (6.7 * 200) / diameter
-                cv2.circle(image, (x, y), r, (0, 255, 0), 2)
-                cv2.putText(image, f"{diameter}px | {distance_cm:.1f}cm",
-                            (x - r, y - r - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-    return image
+        for x,y,r in np.round(circles[0]).astype(int):
+            roi = mask[y-r:y+r, x-r:x+r]
+            cnts, _ = cv2.findContours(roi, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if not cnts: 
+                continue
+            c = max(cnts, key=cv2.contourArea)
+            area = cv2.contourArea(c)
+            circ = 4*np.pi*area/(cv2.arcLength(c,True)**2 + 1e-5)
+            if area<min_area or area>max_area or circ<circularity_threshold:
+                continue
+            # draw
+            cv2.circle(image, (x,y), r, (0,255,0), 2)
+            dist = (18*200)/(2*r)
+            cv2.putText(image, f"{2*r}px|{dist:.1f}cm",
+                        (x-r, y-r-10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
+            accepted.append((x,y,r))
+    return image, mask, accepted
 
 # === Frame Update Function ===
 def update(*args):
     global latest_rgb_frame, last_time, target_distance_cm
     frame = frame_read.frame
     frame = cv2.resize(frame, (640, 480))
-    frame = detect_green_circles(frame)
 
-    # === Update PID gains from trackbars ===
+    # HSV threshold sliders
+    lower_green[:] = [s_hmin.val, s_smin.val, s_vmin.val]
+    upper_green[:] = [s_hmax.val, s_smax.val, s_vmax.val]
+
+    # === Detection Parameters ===
+    p1    = s_param1.val
+    p2    = s_param2.val
+    minR  = s_minR.val
+    maxR  = s_maxR.val
+    minA  = s_minA.val
+    maxA  = s_maxA.val
+    circT = s_circ.val
+
+    # === Circle Detection (always)
+    result, mask = detect_green_circles(
+        frame.copy(), lower_green, upper_green,
+        p1, p2, minR, maxR, minA, maxA, circT
+    )
+
+    # === PID update (always)
     pid_yaw.Kp = slider_kp_yaw.val
     pid_yaw.Ki = slider_ki_yaw.val
     pid_yaw.Kd = slider_kd_yaw.val
@@ -208,58 +291,49 @@ def update(*args):
     pid_fb.Kd = slider_kd_fb.val
     target_distance_cm = slider_target_distance.val
 
-
+    # === Follow logic if active
     if follow_mode:
-        global yaw, up_down, forward_backward
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, lower_green, upper_green)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
-        blurred = cv2.GaussianBlur(mask, (9, 9), 2)
-
-        circles = cv2.HoughCircles(blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=50,
-                                   param1=100, param2=50, minRadius=40, maxRadius=150)
-
-        dt = time.time() - last_time
-        last_time = time.time()
+        blurred = cv2.GaussianBlur(mask, (5, 5), 1)
+        circles = cv2.HoughCircles(
+            blurred, cv2.HOUGH_GRADIENT,
+            dp=1.0, minDist=30,
+            param1=int(p1), param2=int(p2),
+            minRadius=int(minR), maxRadius=int(maxR)
+        )
 
         if circles is not None:
-            circles = np.round(circles[0, :]).astype("int")
-            largest_circle = max(circles, key=lambda c: c[2])
-            x, y, r = largest_circle
-            cx, cy = x, y
-
-            diameter_px = 2 * r
-            distance_cm = (6.7 * 200) / diameter_px  # Focal * Real_D / Diameter
-            error_x = cx - frame.shape[1] // 2
-            error_y = frame.shape[0] // 2 - cy
+            x, y, r = np.round(circles[0][0]).astype(int)
+            diameter = 2 * r
+            distance_cm = (18 * 200) / diameter
+            error_x = x - frame.shape[1] // 2
+            error_y = frame.shape[0] // 2 - y
             error_d = distance_cm - target_distance_cm
+
+            dt = time.time() - last_time
+            last_time = time.time()
 
             with lock:
                 yaw = int(np.clip(pid_yaw.compute(error_x, dt), -50, 50))
                 up_down = int(np.clip(pid_z.compute(error_y, dt), -50, 50))
                 forward_backward = int(np.clip(pid_fb.compute(error_d, dt), -50, 50))
-                forward_backward = forward_backward * 8
-            # Debug overlay
-            cv2.circle(frame, (cx, cy), r, (0, 255, 0), 2)
-            cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
-            cv2.putText(frame, f"{distance_cm:.1f}cm", (cx - r, cy - r - 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
-            print(f"FB Error: {error_d:.2f}, FB Output: {forward_backward} Measured Distance: {distance_cm:.2f} cm, Target: {target_distance_cm}")
 
+            print(f"🎯 X: {x}, Y: {y}, D: {distance_cm:.1f}cm, "
+                  f"ErrX: {error_x}, ErrD: {error_d:.2f}")
         else:
             with lock:
                 yaw = 0
                 up_down = 0
                 forward_backward = 0
 
+    # === Update GUI ===
+    latest_rgb_frame = result.copy()
+    im.set_array(result)
+    mask_im.set_array(mask)
+    return [im, mask_im]
 
+fig_main.set_size_inches(960 / fig_main.dpi, 1040 / fig_main.dpi)
+ani = animation.FuncAnimation(fig_main, update, interval=50, cache_frame_data=False)
 
-    latest_rgb_frame = frame.copy()
-    im.set_array(frame)
-    return [im]
-
-fig.set_size_inches(960 / fig.dpi, 1040 / fig.dpi)
-ani = animation.FuncAnimation(fig, update, interval=50, cache_frame_data=False)
 
 print("🕹️ Drone control ready. Press 'C' to switch cameras. Close window to land.")
 try:
