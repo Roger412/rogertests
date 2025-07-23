@@ -42,7 +42,7 @@ def receiver():
 
 
 # Start both threads
-t_send = threading.Thread(target=sender, daemon=True)
+# t_send = threading.Thread(target=sender, daemon=True)
 t_recv = threading.Thread(target=receiver, daemon=True)
 
 t_send.start()
